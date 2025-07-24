@@ -38,9 +38,6 @@ To avoid these issues:
 
 ---
 
-## 🚫 Zero-Shot Performance (Pretrained BERT Without Fine-Tuning)
-
-Before fine-tuning, the pretrained `bert-base-uncased` model was tested in a **zero-shot setting** — that is, without any task-specific training.
 
 ## 🚫 Zero-Shot Classification on Synthetic Dataset (100 Samples)
 
