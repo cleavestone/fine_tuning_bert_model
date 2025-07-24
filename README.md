@@ -179,23 +179,24 @@ Other augmentation techniques such as **synonym replacement**, **random deletion
 
 ---
 
-## 📊 Performance Comparison: Pretrained vs Fine-Tuned BERT
+## 📊 Performance Comparison: Zero-Shot vs Fine-Tuned BERT (Synthetic Dataset, 100 Samples)
 
-| Metric        | Pretrained (Zero-Shot) | Fine-Tuned (7 Epochs) |
-|---------------|------------------------|------------------------|
-| Accuracy      | 0.35                   | 1.00                   |
-| Macro F1      | 0.17                   | 1.00                   |
-| Weighted F1   | 0.18                   | 1.00                   |
-| Class 0 F1    | 0.00                   | 1.00                   |
-| Class 1 F1    | 0.52                   | 1.00                   |
-| Class 2 F1    | 0.00                   | 1.00                   |
+| Metric             | Zero-Shot BERT | Fine-Tuned BERT |
+|--------------------|----------------|-----------------|
+| **Accuracy**       | 0.21           | 0.61            |
+| **Macro F1**       | 0.14           | 0.58            |
+| **Weighted F1**    | 0.13           | 0.55            |
+| **Negative F1**    | 0.00           | 0.85            |
+| **Neutral F1**     | 0.11           | 0.27            |
+| **Positive F1**    | 0.31           | 0.62            |
 
-### ✅ Summary
+---
 
-- The **pretrained model failed** to generalize and predict two out of three classes.
-- After **fine-tuning**, the model achieved perfect performance on the seen dataset.
-- However, generalization remains a concern — highlighting the importance of **larger, diverse datasets** and **augmentation techniques**.
+### 🎯 Key Insights
 
+- The fine-tuned model shows **significant improvements across all metrics** compared to the zero-shot BERT.
+- **Negative and positive sentiments** are now well recognized after fine-tuning.
+- **Neutral class** still poses a challenge, indicating potential benefit from better class balancing or more varied examples.
 ---
 
 ## 💼 Final Note: Interview Context
