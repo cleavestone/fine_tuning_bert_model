@@ -97,7 +97,7 @@ After fine-tuning the `bert-base-uncased` model on the cleaned and deduplicated 
 
 ---
 
-![Training Curve]('static\eval_loss.png')
+![Training Curve](static\eval_loss.png)
 
 
 ### 🧠 Analysis: Why Did the Model Score a Perfect F1?
@@ -111,11 +111,8 @@ While a perfect F1 score may appear impressive, it should be **interpreted with 
 #### ✅ 2. Small Test Set (86 samples)
 - The evaluation set is relatively small, so it's **easier for the model to score perfectly** by memorizing or generalizing well to a narrow domain.
 
-#### ⚠️ 3. Risk of Overfitting
-- Perfect performance after a few epochs is often a sign of **overfitting**, especially if validation loss keeps decreasing while F1 is already at 1.0.
-- The model may have **memorized patterns** specific to this dataset, reducing its generalizability.
 
-#### ⚠️ 4. Lack of Variability
+#### ⚠️ 3. Lack of Variability
 - If review texts follow similar structures, wording, or are short and unambiguous, classification becomes trivial for a pretrained model like BERT.
 
 ---
