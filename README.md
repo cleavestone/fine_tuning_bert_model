@@ -1,3 +1,6 @@
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/cleavestone/fine_tuning_bert_model/blob/main/final_notebook.ipynb)
+
+
 # 🤖 Fine-Tuning BERT for Multiclass Text Classification
 
 ## 📌 Project Overview
