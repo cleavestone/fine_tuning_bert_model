@@ -68,7 +68,7 @@ The `bert-base-uncased` model was **not fine-tuned for sentiment classification*
 This result **highlights the importance of fine-tuning** even powerful language models like BERT on domain-specific and task-specific data.
 
 
-## ✅ Fine-Tuned Performance (BERT after 5 Epochs of Training)
+## ✅ Fine-Tuned Performance (BERT after 7 Epochs of Training)
 
 After fine-tuning the `bert-base-uncased` model on the cleaned and deduplicated dataset (426 unique examples), performance improved drastically.
 
@@ -89,11 +89,14 @@ After fine-tuning the `bert-base-uncased` model on the cleaned and deduplicated 
 
 | Epoch | Training Loss | Validation Loss | F1 Score |
 |-------|----------------|------------------|----------|
-| 1     | No log         | 1.0481           | 0.5337   |
-| 2     | No log         | 0.9060           | 0.8751   |
-| 3     | No log         | 0.5701           | 0.9298   |
-| 4     | No log         | 0.2990           | 1.0000   |
-| 5     | 0.7790         | 0.2357           | 1.0000   |
+| 1     | No log         | 1.0454           | 0.5604   |
+| 2     | No log         | 0.8583           | 0.8751   |
+| 3     | No log         | 0.3691           | 0.9532   |
+| 4     | No log         | 0.1027           | 1.0000   |
+| 5     | 0.6818         | 0.0321           | 1.0000   |
+| 6     | 0.6818         | 0.0182           | 1.0000   |
+| 7     | 0.6818         | 0.0151           | 1.0000   |
+
 
 ---
 
