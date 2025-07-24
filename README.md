@@ -121,8 +121,24 @@ While a perfect F1 score may appear impressive, it should be **interpreted with 
 
 Fine-tuning drastically improved model performance compared to the zero-shot setting. However, **the perfect F1 score warrants cautious optimism**. Future steps could include:
 
-- Validating the model on an **external dataset** or through cross-validation
 - Expanding the dataset with **more diverse and challenging samples**
 - Evaluating **model robustness** with noisy or ambiguous examples
+
+-----
+## 📊 Performance Comparison: Pretrained vs Fine-Tuned BERT
+
+| Metric        | Pretrained (Zero-Shot) | Fine-Tuned (5 Epochs) |
+|---------------|------------------------|------------------------|
+| Accuracy      | 0.35                   | 1.00                   |
+| Macro F1      | 0.17                   | 1.00                   |
+| Weighted F1   | 0.18                   | 1.00                   |
+| Class 0 F1    | 0.00                   | 1.00                   |
+| Class 1 F1    | 0.52                   | 1.00                   |
+| Class 2 F1    | 0.00                   | 1.00                   |
+
+### ✅ Key Observations
+- The pretrained model failed to classify two of the three classes entirely.
+- After fine-tuning, the model achieved **perfect classification** on all classes.
+- This highlights the **importance of task-specific fine-tuning** for transformer models like BERT.
 
 
