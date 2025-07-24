@@ -1,136 +1,187 @@
-# Fine-Tuning BERT for Multiclass Text Classification
+# 🤖 Fine-Tuning BERT for Multiclass Text Classification
 
 ## 📌 Project Overview
 
-This project focuses on fine-tuning the BERT (base-uncased) model for a multiclass text classification task. The goal is to predict the **sentiment** of a review as one of the following classes:
+This project focuses on fine-tuning the `bert-base-uncased` model for a **multiclass text classification** task. The goal is to classify **review text** into one of three sentiment categories:
+
 - `Negative`
 - `Neutral`
 - `Positive`
 
-The task is framed as a **3-class classification problem**, and Hugging Face Transformers were used to perform training and evaluation. The performance of the fine-tuned model is compared against the zero-shot performance of the pretrained model.
+The task is framed as a **3-class classification problem**, and the model was trained and evaluated using the Hugging Face Transformers library. Performance of the fine-tuned model was also compared against the **zero-shot performance** of the pretrained BERT model.
+
+> 📍 This project was completed as part of a **technical interview assignment** to demonstrate hands-on skills in NLP and model evaluation using transformers.
 
 ---
 
 ## 📊 Dataset Analysis
 
-The initial dataset provided contained approximately **9,999 rows** of review text and corresponding sentiment labels. However, during preprocessing, a **critical issue** was discovered:
+The original dataset contained approximately **9,999 rows** of text reviews and corresponding sentiment labels. However, during the initial analysis, a critical issue emerged:
 
-### ⚠️ Major Finding: Extreme Duplication
+### ⚠️ Major Issue: Extreme Duplication
 
-Out of the 9,999 rows:
-- **9,573 entries** were **duplicates** of each other based on the `review_text` and `sentiment` column.
-- Only **426 unique reviews** remained after removing duplicates.
+Out of the 9,999 entries:
+- **9,573 rows** were exact **duplicates** based on the `review_text` and `sentiment` columns.
+- Only **426 unique review entries** remained after removing duplicates.
 
-### 🔍 Implication
+### 🔍 Implications of Duplication
 
-This duplication would cause the model to:
-- **See the same samples repeatedly during training**, making it trivial to memorize.
-- **Likely overfit** if evaluated on the same (or duplicated) examples during validation or testing.
-- Produce **unrealistically high performance metrics** due to data leakage.
+- The model would **see the same samples repeatedly**, which would make it easy to memorize.
+- This could result in **overfitting**, where the model performs well only on the duplicated data.
+- **Evaluation metrics could be misleading** due to data leakage between train and test sets.
 
 ### ✅ Solution
 
-To ensure fair evaluation and effective fine-tuning:
-- **All duplicates were removed** from the dataset.
-- The remaining **426 unique examples** were used for training and validation.
+To avoid these issues:
+- All duplicate entries were **removed**.
+- The remaining **426 unique rows** were used for training, validation, and testing.
 
 ---
 
-## 🚫 Zero-Shot Performance (Pretrained BERT without Fine-Tuning)
+## 🚫 Zero-Shot Performance (Pretrained BERT Without Fine-Tuning)
 
-Before fine-tuning, I evaluated the pretrained `bert-base-uncased` model in a zero-shot setting — meaning, it was directly used to classify review sentiments without any task-specific training.
+Before fine-tuning, the pretrained `bert-base-uncased` model was tested in a **zero-shot setting** — that is, without any task-specific training.
 
-### 📉 Classification Report (Zero-Shot)
+## 🚫 Zero-Shot Classification on Synthetic Dataset (100 Samples)
 
-| Class | Precision | Recall | F1-Score | Support |
-|-------|-----------|--------|----------|---------|
-| 0 (Negative) | 0.00 | 0.00 | 0.00 | 29 |
-| 1 (Neutral)  | 0.35 | 1.00 | 0.52 | 30 |
-| 2 (Positive) | 0.00 | 0.00 | 0.00 | 27 |
+To further validate model generalization and address overfitting concerns, a **synthetic dataset of 100 reviews** (balanced across `positive`, `neutral`, and `negative` sentiments) was used to evaluate the pretrained `bert-base-uncased` model in a **zero-shot setting**.
 
-**Overall:**
-- **Accuracy:** 0.35  
-- **Macro Avg F1-Score:** 0.17  
-- **Weighted Avg F1-Score:** 0.18  
+### 📊 Classification Report
 
-### ⚠️ Observations
-
-- The model **predicted all samples as 'Neutral'**, completely ignoring the 'Negative' and 'Positive' classes.
-- This led to **zero precision, recall, and F1-score** for two out of the three classes.
-- The **macro and weighted F1-scores were extremely low**, reflecting the poor per-class performance.
-
-### 💡 Why Did This Happen?
-
-The `bert-base-uncased` model was **not fine-tuned for sentiment classification**, so:
-- It lacked task-specific understanding of what makes a review "positive", "neutral", or "negative".
-- In the absence of guidance, it **defaulted to predicting the majority class**, or the one with the most "neutral" embeddings.
-
-This result **highlights the importance of fine-tuning** even powerful language models like BERT on domain-specific and task-specific data.
-
-
-## ✅ Fine-Tuned Performance (BERT after 7 Epochs of Training)
-
-After fine-tuning the `bert-base-uncased` model on the cleaned and deduplicated dataset (426 unique examples), performance improved drastically.
-
-### 📈 Classification Report (Fine-Tuned)
-
-| Class | Precision | Recall | F1-Score | Support |
-|-------|-----------|--------|----------|---------|
-| 0 (Negative) | 1.00 | 1.00 | 1.00 | 29 |
-| 1 (Neutral)  | 1.00 | 1.00 | 1.00 | 30 |
-| 2 (Positive) | 1.00 | 1.00 | 1.00 | 27 |
+| Class     | Precision | Recall | F1-Score | Support |
+|-----------|-----------|--------|----------|---------|
+| Negative  | 0.00      | 0.00   | 0.00     | 31      |
+| Neutral   | 0.25      | 0.07   | 0.11     | 42      |
+| Positive  | 0.20      | 0.67   | 0.31     | 27      |
 
 **Overall:**
-- **Accuracy:** 1.00  
-- **Macro Avg F1-Score:** 1.00  
-- **Weighted Avg F1-Score:** 1.00  
+- **Accuracy:** 0.21  
+- **Macro Avg F1-Score:** 0.14  
+- **Weighted Avg F1-Score:** 0.13  
 
-### 📊 Training & Evaluation Progress
+---
+
+### 🧮 Confusion Matrix
+
+|               | Predicted Positive | Predicted Neutral | Predicted Negative |
+|---------------|--------------------|-------------------|--------------------|
+| **Positive**  | 18                 | 9                 | 0                  |
+| **Neutral**   | 39                 | 3                 | 0                  |
+| **Negative**  | 31                 | 0                 | 0                  |
+
+---
+
+### ⚠️ Key Observations
+
+- The model **heavily favored the 'positive' class**, incorrectly labeling most neutral and negative reviews as positive.
+- **All 'negative' examples were misclassified**, indicating a complete lack of recognition for this class in a zero-shot setting.
+- The **low precision, recall, and F1-scores** across classes highlight the model’s **inability to generalize without fine-tuning**.
+---
+
+## ✅ Fine-Tuned Model Evaluation on Synthetic Dataset (100 Samples)
+
+After observing signs of overfitting on the original validation set, the fine-tuned BERT model was tested on a **synthetic dataset** containing 100 sentiment-labeled reviews with intentionally diverse and challenging examples.
+
+### 📊 Classification Report
+
+| Class     | Precision | Recall | F1-Score | Support |
+|-----------|-----------|--------|----------|---------|
+| Negative  | 0.78      | 0.94   | 0.85     | 31      |
+| Neutral   | 0.78      | 0.17   | 0.27     | 42      |
+| Positive  | 0.46      | 0.93   | 0.62     | 27      |
+
+**Overall:**
+- **Accuracy:** 0.61  
+- **Macro Avg F1-Score:** 0.58  
+- **Weighted Avg F1-Score:** 0.55  
+
+---
+
+### 🧮 Confusion Matrix
+
+|               | Predicted Positive | Predicted Neutral | Predicted Negative |
+|---------------|--------------------|-------------------|--------------------|
+| **Positive**  | 25                 | 2                 | 0                  |
+| **Neutral**   | 27                 | 7                 | 8                  |
+| **Negative**  | 2                  | 0                 | 29                 |
+
+---
+
+### 🔍 Key Observations
+
+- The fine-tuned model **performed well on the 'negative' and 'positive' classes**, achieving high recall.
+- **Neutral sentiment remains challenging**, with low recall and significant confusion with the other classes.
+- Overall accuracy improved significantly compared to the zero-shot setting (**0.61 vs. 0.21**).
+- These results show that the model **generalizes better post-fine-tuning**, though there is still room to improve class balance and robustness — particularly for **neutral** examples.
+
+---
+
+### 📈 Fine-Tuning Progress (Epoch-wise Metrics)
 
 | Epoch | Training Loss | Validation Loss | F1 Score |
 |-------|----------------|------------------|----------|
-| 1     | No log         | 1.0454           | 0.5604   |
-| 2     | No log         | 0.8583           | 0.8751   |
-| 3     | No log         | 0.3691           | 0.9532   |
-| 4     | No log         | 0.1027           | 1.0000   |
-| 5     | 0.6818         | 0.0321           | 1.0000   |
-| 6     | 0.6818         | 0.0182           | 1.0000   |
-| 7     | 0.6818         | 0.0151           | 1.0000   |
+| 1     | No log         | 1.042730         | 0.557708 |
+| 2     | No log         | 0.739587         | 0.679919 |
+| 3     | No log         | 0.265299         | 0.953067 |
+| 4     | No log         | 0.037440         | 1.000000 |
+| 5     | 0.658300       | 0.011437         | 1.000000 |
+| 6     | 0.658300       | 0.007700         | 1.000000 |
+| 7     | 0.658300       | 0.007001         | 1.000000 |
 
 
----
-
-![Training Curve](static/eval_loss.png)
-
-
-### 🧠 Analysis: Why Did the Model Score a Perfect F1?
-
-While a perfect F1 score may appear impressive, it should be **interpreted with caution**, especially given the small size of the dataset. Here are some likely contributing factors:
-
-#### ✅ 1. Clean & Simple Dataset
-- After removing duplicates, the resulting dataset may have become simpler and easier to classify.
-- Reviews might contain very **clear sentiment signals** that BERT can easily learn.
-
-#### ✅ 2. Small Test Set (86 samples)
-- The evaluation set is relatively small, so it's **easier for the model to score perfectly** by memorizing or generalizing well to a narrow domain.
-
-
-#### ⚠️ 3. Lack of Variability
-- If review texts follow similar structures, wording, or are short and unambiguous, classification becomes trivial for a pretrained model like BERT.
+![Training Curve](static/finalimag.png)
 
 ---
 
-### 🎯 Conclusion
+## 🧪 Additional Testing, Overfitting Concerns & Augmentation Strategy
 
-Fine-tuning drastically improved model performance compared to the zero-shot setting. However, **the perfect F1 score warrants cautious optimism**. Future steps could include:
+### ⚠️ Suspected Overfitting
 
-- Expanding the dataset with **more diverse and challenging samples**
-- Evaluating **model robustness** with noisy or ambiguous examples
+While the model achieved perfect classification on the validation set, I suspected **overfitting** due to:
+- The **small size** of the dataset (only 426 samples total)
+- The **simplicity** and repetitive nature of review texts
 
------
+---
+
+### 🧪 Testing on Synthetic Dataset
+
+To validate whether the model had genuinely learned general sentiment understanding:
+- I created a **synthetic test set** containing new Positive, Neutral, and Negative reviews.
+- These reviews were **manually crafted** to simulate real-world cases but with added variability.
+
+#### 🧪 Outcome
+
+- The model **did not perform perfectly** on this synthetic set.
+- This confirmed that the original dataset likely lacked **diversity and complexity**, and the model had **memorized** many of the training patterns.
+
+---
+
+### 📈 Suggested Solution: Back-Translation for Data Augmentation
+
+To improve model generalization and reduce overfitting, I propose using **data augmentation techniques** such as **back-translation**:
+
+#### 🔄 What is Back-Translation?
+
+- A sentence is translated to a **pivot language** (e.g., French, German), then back to English.
+- This generates **paraphrased versions** of the original text that preserve meaning but differ in structure.
+
+> Example:  
+> Original: “The staff were very rude.”  
+> Augmented: “The personnel behaved in a very unfriendly manner.”
+
+#### ✅ Benefits
+
+- **Increases training data** without collecting new samples
+- Encourages **robust feature learning**
+- Reduces reliance on memorized patterns
+
+Other augmentation techniques such as **synonym replacement**, **random deletion**, and **Easy Data Augmentation (EDA)** could also be used.
+
+---
+
 ## 📊 Performance Comparison: Pretrained vs Fine-Tuned BERT
 
-| Metric        | Pretrained (Zero-Shot) | Fine-Tuned (5 Epochs) |
+| Metric        | Pretrained (Zero-Shot) | Fine-Tuned (7 Epochs) |
 |---------------|------------------------|------------------------|
 | Accuracy      | 0.35                   | 1.00                   |
 | Macro F1      | 0.17                   | 1.00                   |
@@ -139,9 +190,21 @@ Fine-tuning drastically improved model performance compared to the zero-shot set
 | Class 1 F1    | 0.52                   | 1.00                   |
 | Class 2 F1    | 0.00                   | 1.00                   |
 
-### ✅ Key Observations
-- The pretrained model failed to classify two of the three classes entirely.
-- After fine-tuning, the model achieved **perfect classification** on all classes.
-- This highlights the **importance of task-specific fine-tuning** for transformer models like BERT.
+### ✅ Summary
 
+- The **pretrained model failed** to generalize and predict two out of three classes.
+- After **fine-tuning**, the model achieved perfect performance on the seen dataset.
+- However, generalization remains a concern — highlighting the importance of **larger, diverse datasets** and **augmentation techniques**.
+
+---
+
+## 💼 Final Note: Interview Context
+
+This project was part of a **technical interview assignment** aimed at demonstrating:
+
+- Practical skills in **NLP** and **transformer-based modeling**
+- Awareness of **data issues** such as duplication and overfitting
+- Ability to apply **robust evaluation techniques** and suggest **scalable improvements**
+
+Through this task, I showcased how to approach a real-world NLP classification challenge using industry best practices — from data cleaning to model evaluation and strategic augmentation.
 
