@@ -97,7 +97,7 @@ After fine-tuning the `bert-base-uncased` model on the cleaned and deduplicated 
 
 ---
 
-![Training Curve](static\eval_loss.png)
+![Training Curve](static/eval_loss.png)
 
 
 ### 🧠 Analysis: Why Did the Model Score a Perfect F1?
