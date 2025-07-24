@@ -68,4 +68,64 @@ The `bert-base-uncased` model was **not fine-tuned for sentiment classification*
 This result **highlights the importance of fine-tuning** even powerful language models like BERT on domain-specific and task-specific data.
 
 
+## ✅ Fine-Tuned Performance (BERT after 5 Epochs of Training)
+
+After fine-tuning the `bert-base-uncased` model on the cleaned and deduplicated dataset (426 unique examples), performance improved drastically.
+
+### 📈 Classification Report (Fine-Tuned)
+
+| Class | Precision | Recall | F1-Score | Support |
+|-------|-----------|--------|----------|---------|
+| 0 (Negative) | 1.00 | 1.00 | 1.00 | 29 |
+| 1 (Neutral)  | 1.00 | 1.00 | 1.00 | 30 |
+| 2 (Positive) | 1.00 | 1.00 | 1.00 | 27 |
+
+**Overall:**
+- **Accuracy:** 1.00  
+- **Macro Avg F1-Score:** 1.00  
+- **Weighted Avg F1-Score:** 1.00  
+
+### 📊 Training & Evaluation Progress
+
+| Epoch | Training Loss | Validation Loss | F1 Score |
+|-------|----------------|------------------|----------|
+| 1     | No log         | 1.0481           | 0.5337   |
+| 2     | No log         | 0.9060           | 0.8751   |
+| 3     | No log         | 0.5701           | 0.9298   |
+| 4     | No log         | 0.2990           | 1.0000   |
+| 5     | 0.7790         | 0.2357           | 1.0000   |
+
+---
+
+![Training Curve]('static\eval_loss.png')
+
+
+### 🧠 Analysis: Why Did the Model Score a Perfect F1?
+
+While a perfect F1 score may appear impressive, it should be **interpreted with caution**, especially given the small size of the dataset. Here are some likely contributing factors:
+
+#### ✅ 1. Clean & Simple Dataset
+- After removing duplicates, the resulting dataset may have become simpler and easier to classify.
+- Reviews might contain very **clear sentiment signals** that BERT can easily learn.
+
+#### ✅ 2. Small Test Set (86 samples)
+- The evaluation set is relatively small, so it's **easier for the model to score perfectly** by memorizing or generalizing well to a narrow domain.
+
+#### ⚠️ 3. Risk of Overfitting
+- Perfect performance after a few epochs is often a sign of **overfitting**, especially if validation loss keeps decreasing while F1 is already at 1.0.
+- The model may have **memorized patterns** specific to this dataset, reducing its generalizability.
+
+#### ⚠️ 4. Lack of Variability
+- If review texts follow similar structures, wording, or are short and unambiguous, classification becomes trivial for a pretrained model like BERT.
+
+---
+
+### 🎯 Conclusion
+
+Fine-tuning drastically improved model performance compared to the zero-shot setting. However, **the perfect F1 score warrants cautious optimism**. Future steps could include:
+
+- Validating the model on an **external dataset** or through cross-validation
+- Expanding the dataset with **more diverse and challenging samples**
+- Evaluating **model robustness** with noisy or ambiguous examples
+
 
